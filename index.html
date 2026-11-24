@@ -1,0 +1,115 @@
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WHR GUFRAN AI</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;padding:20px;
+ font-family:Arial,sans-serif;
+ background:#071426;color:white
+}
+.container{
+ max-width:520px;margin:25px auto;
+ padding:24px;background:#10243d;
+ border:1px solid #244767;border-radius:20px
+}
+.logo{text-align:center;color:#35c8ff;font-size:28px;font-weight:bold}
+.subtitle{text-align:center;color:#b9c9dc}
+h3{color:#35c8ff}
+textarea{
+ width:100%;height:110px;padding:14px;
+ border-radius:12px;border:1px solid #41617f;
+ font-size:16px;background:#071426;color:white
+}
+button{
+ border:0;border-radius:10px;padding:13px;
+ font-weight:bold;cursor:pointer
+}
+.generate{width:100%;margin-top:15px;background:#00aaff;color:white;font-size:17px}
+.output{
+ background:#071426;border:1px solid #244767;
+ border-radius:12px;padding:14px;margin-top:16px
+}
+.output-text{margin:12px 0;line-height:1.6;overflow-wrap:anywhere}
+.copy{background:#087e68;color:white;width:100%}
+#message{text-align:center;color:#54e6b4;margin-top:12px}
+footer{text-align:center;color:#91a8c0;font-size:12px;margin-top:25px}
+</style>
+</head>
+<body>
+<div class="container">
+ <div class="logo">WHR GUFRAN AI</div>
+ <p class="subtitle">Your YouTube Creator Assistant</p>
+
+ <h3>अपने वीडियो या गाने का नाम लिखें</h3>
+ <textarea id="topic" placeholder="अपने वीडियो या गाने का नाम लिखें..."></textarea>
+ <button class="generate" onclick="generate()">Generate Content</button>
+
+ <div id="result"></div>
+ <div id="message"></div>
+ <footer>Made with ❤️ by WHR GUFRAN</footer>
+</div>
+
+<script>
+function escapeHTML(text){
+ return text.replace(/[&<>"']/g,function(c){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+ });
+}
+
+function generate(){
+ const topic=document.getElementById("topic").value.trim();
+ const result=document.getElementById("result");
+ const message=document.getElementById("message");
+
+ if(!topic){
+  message.textContent="पहले वीडियो या गाने का नाम लिखें।";
+  result.innerHTML="";
+  return;
+ }
+
+ const items=[
+  ["Video Title","title",topic+" | Official Video | WHR GUFRAN"],
+  ["Description","description","पेश है "+topic+"। वीडियो पसंद आए तो Like, Share और Subscribe जरूर करें। धन्यवाद! - WHR GUFRAN"],
+  ["Hashtags","hashtags","#"+topic.replace(/\s+/g,"")+" #WHRGUFRAN #YouTube #NewSong"],
+  ["Tags","tags",topic+", WHR GUFRAN, New Song, Official Video, YouTube"]
+ ];
+
+ result.innerHTML=items.map(item=>`
+  <div class="output">
+   <b>${item[0]}</b>
+   <div class="output-text" id="${item[1]}">${escapeHTML(item[2])}</div>
+   <button class="copy" onclick="copyText('${item[1]}')">Copy ${item[0]}</button>
+  </div>
+ `).join("");
+
+ message.textContent="आपका कंटेंट तैयार है!";
+}
+
+async function copyText(id){
+ const text=document.getElementById(id).textContent;
+ const message=document.getElementById("message");
+ try{
+  if(navigator.clipboard && window.isSecureContext){
+   await navigator.clipboard.writeText(text);
+  }else{
+   const area=document.createElement("textarea");
+   area.value=text;
+   document.body.appendChild(area);
+   area.select();
+   const copied=document.execCommand("copy");
+   area.remove();
+   if(!copied) throw new Error("Copy failed");
+  }
+  message.textContent="कॉपी हो गया!";
+ }catch(e){
+  message.textContent="कॉपी नहीं हुआ। टेक्स्ट को दबाकर Copy चुनें।";
+ }
+}
+</script>
+</body>
+</html>
